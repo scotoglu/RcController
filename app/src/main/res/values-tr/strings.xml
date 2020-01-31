@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RcController</string>
+    <string name="addButton">Ekle</string>
+    <string name="clearButton">Temizle</string>
+    <string name="deleteButton">Sil</string>
+    <string name="no_bluetooth_adapter">Cihazin Bluetooth Özelliği Bulunmamaktadır</string>
+    <string name="result_canceled">İzin İptal Edildi</string>
+    <string name="result_ok">İzin Verildi</string>
+    <string name="saveButton">Kaydet</string>
+    <string name="viewDeleted">Buton Silindi.</string>
+    <string name="chooseView">Silinecek butona tıklayınız.</string>
+    <string name="no_view">Kaydetmek için önce buton ekleyiniz.</string>
+    <string name="added_success">Ekleme başarılı</string>
+    <string name="added_unsuccess">Ekleme başarısız</string>
+    <string name="savedTemplate">Kayıtlı Şemalar</string>
+    <string name="disable_bt">Bluetooth kapatılıyor.</string>
+</resources>

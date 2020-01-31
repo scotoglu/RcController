@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">RcController</string>
+    <string name="result_ok">Permission Granted</string>
+    <string name="result_canceled">Permission Not Granted</string>
+    <string name="no_bluetooth_adapter">Device Has No Bluetooth</string>
+    <string name="addButton">ADD</string>
+    <string name="clearButton">CLEAR</string>
+    <string name="deleteButton">DELETE</string>
+    <string name="saveButton">SAVE</string>
+    <string name="viewDeleted">View Deleted.</string>
+    <string name="chooseView">Press Button that will be deleted.</string>
+    <string-array name="button_color">
+        <item>Choose Color</item>
+        <item>Red</item>
+        <item>Green</item>
+        <item>Blue</item>
+    </string-array>
+
+    <string-array name="button_icons">
+        <item>Choose Icon</item>
+        <item>Forward</item>
+        <item>Backward</item>
+        <item>Left</item>
+        <item>Right</item>
+        <item>ON</item>
+        <item>OFF</item>
+        <item>Start</item>
+    </string-array>
+    <string name="no_view">There is no button on work area.Before saving add button</string>
+    <string name="added_success">Template added succesfully</string>
+    <string name="added_unsuccess">Adding Template Fail.</string>
+    <string name="savedTemplate">Saved Template</string>
+    <string name="disable_bt">Blutetooh disabling.</string>
+</resources>
