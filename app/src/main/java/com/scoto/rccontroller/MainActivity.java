@@ -1,16 +1,8 @@
 package com.scoto.rccontroller;
-/*
- * Sefa ÇOTOĞLU
- * scotoglu@gmail.com
- * 14.01.2020
- * */
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,7 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.util.Base64;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -56,8 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnDrawTemplate.setOnClickListener(this);
         btnSavedTemplate.setOnClickListener(this);
 
-        /*if app will work on Emulator comment below if-else statement,if don't cause a error
-        Wont work
+        /*if app will work on Emulator, comment below if-else statement,if you don't, cause a error
         Emulator has no Bluetooth features.
         */
 

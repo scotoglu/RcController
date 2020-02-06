@@ -31,4 +31,7 @@
     <string name="added_unsuccess">Adding Template Fail.</string>
     <string name="savedTemplate">Saved Template</string>
     <string name="disable_bt">Blutetooh disabling.</string>
+    <string name="pairedDevice">Paired Device List</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
 </resources>

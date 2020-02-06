@@ -13,7 +13,7 @@ public class BluetoothOperations {
     private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 
-    BluetoothOperations() {
+    public BluetoothOperations() {
         Log.d(TAG, "BluetoothOperations: Constructor Acctive...");
     }
 

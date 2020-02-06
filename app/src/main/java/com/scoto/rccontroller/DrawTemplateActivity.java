@@ -5,15 +5,16 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.scoto.rccontroller.CustomDialogs.CustomDialogAddButton;
 import com.scoto.rccontroller.CustomDialogs.CustomDialogAddTemplate;
+import com.scoto.rccontroller.CustomDialogs.CustomDialogPairedDeviceList;
 import com.scoto.rccontroller.Database.AppDatabase;
 import com.scoto.rccontroller.Modal.EntityModal;
 
@@ -41,9 +43,11 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class DrawTemplateActivity extends AppCompatActivity implements CustomDialogAddTemplate.DialogTemplateNameListener,
-        CustomDialogAddButton.DialogAddButtonListener {
+        CustomDialogAddButton.DialogAddButtonListener,
+        CustomDialogPairedDeviceList.DialogCustomPairedDeviceListListener {
 
 
+    /*------------------*/
     private Button button;
     private View decoderView;
     private static final String TAG = "DrawTemplateActivity";
@@ -55,8 +59,7 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
     private String savedTemplate = null;
     private String templateName;
     private ImageView stateOfConnection;
-
-    /*BTConnectClient properties*/
+    //    /*BTConnectClient properties*/
     private boolean mConnected = true;
     private ProgressDialog mProgressDialog;
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -67,7 +70,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
     private Condition condition = lock.newCondition();
     private Queue<String> stringQueue = new LinkedList<>();
     private static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-
     private BTConnectionClient btConnectionClient;
 
     @Override
@@ -110,20 +112,22 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
         } else {
             addTemplateName();
         }
-        stateOfConnection = findViewById(R.id.stateOfConnection);
 
         SharedPreferences sharedPreferences = this.getSharedPreferences("ApplicationShared", MODE_PRIVATE);
         String address = sharedPreferences.getString("DeviceAddress", "null");
-
+        Log.d(TAG, "onCreate: Passed Address" + passedAddress);
         if (passedAddress == null) {
             passedAddress = address;
         }
-        if (passedAddress != null) {
+
+        if (passedAddress != null && btConnectionClient == null) {
             /*Connection Thread */
             btConnectionClient = new BTConnectionClient(this);
             btConnectionClient.execute();
+        } else {
+            Toast.makeText(this, "There is no connection, work without connection...", Toast.LENGTH_SHORT).show();
         }
-        
+
     }
 
     @Override
@@ -135,6 +139,8 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy: Called...");
+        btConnectionClient.disconnect();
     }
 
 
@@ -155,6 +161,18 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
         templateName = tmpName;
 
     }
+    /*---------------------------------------------------------------------------------------*/
+
+    public void openDeviceList() {
+        CustomDialogPairedDeviceList customDialogPairedDeviceList = new CustomDialogPairedDeviceList(this);
+        customDialogPairedDeviceList.show(getSupportFragmentManager(), "Example Diaalog");
+    }
+
+    @Override
+    public void pairedDevice(String address) {
+        mAddress = address;
+        Log.d(TAG, "pairedDevice: mAddress" + mAddress);
+    }
 
     /*---------------------------------------------------------------------------------------*/
     /*When press the Add, opens dialog for adding new button..*/
@@ -167,7 +185,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
         CustomDialogAddButton dialogAddButton = new CustomDialogAddButton(this);
         dialogAddButton.show(getSupportFragmentManager(), "Example Dialog");
     }
-
 
     @Override
     public void applyText(String txtBtn, String btnColor, String viewIcon) {
@@ -365,7 +382,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
 
                     //sends the data to working thread...
                     btConnectionClient.transmitData(data);
-
                     break;
                 case MotionEvent.ACTION_POINTER_UP:
 
@@ -398,9 +414,17 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
         BTConnectionClient(AppCompatActivity activity) {
             Log.d(TAG, "BTConnectClient: Constructor Active");
             sendData = data;
+            mCurrentActivity = activity;
             mAddress = passedAddress;
         }
 
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = new ProgressDialog(mCurrentActivity);
+            mProgressDialog.setMessage("Connecting...");
+        }
 
         @Override
         protected Void doInBackground(Void... devices) {
@@ -430,11 +454,11 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
 
             } else {
 
-                Log.d(TAG, "onPostExecute: Connected...");
+                Toast.makeText(mCurrentActivity, "Connected...", Toast.LENGTH_SHORT).show();
 
                 // sendData();
             }
-            //mProgressDialog.dismiss();
+            mProgressDialog.dismiss();
         }
 
         public void disconnect() {
@@ -450,13 +474,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
             Log.d(TAG, "disconnect: Disconnected");
         }
 
-        public boolean stateOfConnection() {
-            if (mBluetoothSocket.isConnected()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
 
         public void transmitData(String data) {
             Log.d(TAG, "transmitData: Active");

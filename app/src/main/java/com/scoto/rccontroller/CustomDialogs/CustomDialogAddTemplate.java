@@ -20,7 +20,7 @@ public class CustomDialogAddTemplate extends AppCompatDialogFragment {
     private EditText addTemplateName;
     private DialogTemplateNameListener listener;
 
-    public CustomDialogAddTemplate(Context context) {
+    public CustomDialogAddTemplate( Context context) {
         this.context = context;
     }
 

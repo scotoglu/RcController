@@ -2,12 +2,19 @@ package com.scoto.rccontroller;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.scoto.rccontroller.Services.BTConnectService;
 
 import java.util.ArrayList;
 
@@ -17,8 +24,12 @@ public class PairedDeviceActivity extends AppCompatActivity {
     private ListView listView;
     private BluetoothOperations mBluetoothOperations;
     private ArrayAdapter mAdapter;
+    private String mAddress;
     private SharedPreferences sharedPreferences;
     private View decoderView;
+   // BTConnectService btConnectService;
+
+    //boolean mBound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +44,7 @@ public class PairedDeviceActivity extends AppCompatActivity {
                 }
             }
         });
+
         mBluetoothOperations = new BluetoothOperations();
         final ArrayList<String> pairedDevices = mBluetoothOperations.getPairedDevices();
 
@@ -47,18 +59,53 @@ public class PairedDeviceActivity extends AppCompatActivity {
                 String info = pairedDevices.get(i).toString();
 
                 final String address = info.substring((info.length() - 17));
+                mAddress = address;
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("DeviceAddress", address);
                 editor.commit();
 
+                Intent intent = new Intent(getApplicationContext(),DrawTemplateActivity.class);
+                intent.putExtra("DEVICE_ADDRESS",address);
+                startActivity(intent);
+                //btConnectService.getAddress(address);
+
                 /*Connectio Client will be here*/
-                BTConnect btConnect = new BTConnect(PairedDeviceActivity.this,address);
-                btConnect.execute();
+//                BTConnect btConnect = new BTConnect(PairedDeviceActivity.this,address);
+//                btConnect.execute();
 
             }
         });
 
     }
+
+
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        intent = new Intent(this, BTConnectService.class);
+//        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        unbindService(connection);
+//        mBound = false;
+//    }
+
+//    private ServiceConnection connection = new ServiceConnection() {
+//        @Override
+//        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+//            BTConnectService.LocalBinder localBinder = (BTConnectService.LocalBinder) iBinder;
+//            btConnectService = localBinder.getService();
+//            mBound = true;
+//        }
+//
+//        @Override
+//        public void onServiceDisconnected(ComponentName componentName) {
+//            mBound = false;
+//        }
+//    };
 
     //Hides the status bar and navigation bar
     @Override
