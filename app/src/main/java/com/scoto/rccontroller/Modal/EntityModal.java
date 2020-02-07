@@ -38,8 +38,7 @@ public class EntityModal {
 
 
     public EntityModal(String templateName, float viewCoordinateX,
-                       float viewCoordinateY, String viewData,
-                       String viewTempSaveDate) {
+                       float viewCoordinateY, String viewData) {
         this.templateName = templateName;
         this.viewCoordinateX = viewCoordinateX;
         this.viewCoordinateY = viewCoordinateY;

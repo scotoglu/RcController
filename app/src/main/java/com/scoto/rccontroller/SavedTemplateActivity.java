@@ -44,7 +44,6 @@ public class SavedTemplateActivity extends AppCompatActivity {
         List<EntityModal> entityModals = mAppDatabase.viewDao().getAll();
 
         for (int i = 0; i < entityModals.size(); i++) {
-            Log.d(TAG, "onCreate: For....");
             templateList.add(entityModals.get(i).getTemplateName());
         }
 

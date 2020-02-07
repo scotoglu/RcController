@@ -3,7 +3,7 @@
     <string name="app_name">RcController</string>
     <string name="addButton">Ekle</string>
     <string name="clearButton">Temizle</string>
-    <string name="deleteButton">Sil</string>
+    <string name="deleteButton">BTN Sil</string>
     <string name="no_bluetooth_adapter">Cihazin Bluetooth Özelliği Bulunmamaktadır</string>
     <string name="result_canceled">İzin İptal Edildi</string>
     <string name="result_ok">İzin Verildi</string>
@@ -18,4 +18,8 @@
     <string name="pairedDevice">Eşleşen Cihazlar</string>
     <string name="ok">Tamam</string>
     <string name="cancel">İptal</string>
+    <string name="deleteTemplate">Şemayı Sil</string>
+    <string name="updateTemp">Güncelle</string>
+    <string name="template_not_found">Şema Bulunamadı.</string>
+    <string name="deleteSucceed">Template silindi</string>
 </resources>

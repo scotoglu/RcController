@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +10,7 @@
         android:layout_width="655dp"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
+        android:layout_marginLeft="-1dp"
         android:layout_marginRight="0dp"
         android:background="@color/home_background">
 
@@ -26,13 +25,6 @@
         android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/stateOfConnection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginBottom="10dp"
-            android:src="@drawable/off_circe" />
         <Button
             android:id="@+id/addBtn"
             android:layout_width="wrap_content"
@@ -41,8 +33,8 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/operations_button"
             android:fontFamily="monospace"
-            android:text="@string/addButton"
-            android:onClick="addButton"/>
+            android:onClick="addButton"
+            android:text="@string/addButton" />
 
         <Button
             android:id="@+id/deleteBtn"
@@ -52,8 +44,8 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/operations_button"
             android:fontFamily="monospace"
-            android:text="@string/deleteButton"
-            android:onClick="deleteButton"/>
+            android:onClick="deleteButton"
+            android:text="@string/deleteButton" />
 
         <Button
             android:id="@+id/clearBtn"
@@ -64,8 +56,31 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/operations_button"
             android:fontFamily="monospace"
-            android:text="@string/clearButton"
-            android:onClick="clearButton"/>
+            android:onClick="clearButton"
+            android:text="@string/clearButton" />
+
+        <Button
+            android:id="@+id/deleteTmp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="3dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/operations_button"
+            android:fontFamily="monospace"
+            android:onClick="deleleteTemplate"
+            android:text="@string/deleteTemplate" />
+
+
+        <Button
+            android:id="@+id/updateTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="3dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/operations_button"
+            android:fontFamily="monospace"
+            android:onClick="updateTemplate"
+            android:text="@string/updateTemp" />
 
         <Button
             android:id="@+id/saveBtn"
@@ -75,8 +90,8 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/operations_button"
             android:fontFamily="monospace"
-            android:text="@string/saveButton"
-            android:onClick="saveButton"/>
+            android:onClick="saveButton"
+            android:text="@string/saveButton" />
 
 
     </LinearLayout>

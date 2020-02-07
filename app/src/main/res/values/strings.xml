@@ -5,7 +5,7 @@
     <string name="no_bluetooth_adapter">Device Has No Bluetooth</string>
     <string name="addButton">ADD</string>
     <string name="clearButton">CLEAR</string>
-    <string name="deleteButton">DELETE</string>
+    <string name="deleteButton">DELETE BTN</string>
     <string name="saveButton">SAVE</string>
     <string name="viewDeleted">View Deleted.</string>
     <string name="chooseView">Press Button that will be deleted.</string>
@@ -34,4 +34,8 @@
     <string name="pairedDevice">Paired Device List</string>
     <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
+    <string name="deleteTemplate">Delete Temp</string>
+    <string name="updateTemp">Update Temp</string>
+    <string name="template_not_found">Template Not Found</string>
+    <string name="deleteSucceed">Successfully deleted</string>
 </resources>

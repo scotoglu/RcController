@@ -20,7 +20,7 @@ public class CustomDialogAddTemplate extends AppCompatDialogFragment {
     private EditText addTemplateName;
     private DialogTemplateNameListener listener;
 
-    public CustomDialogAddTemplate( Context context) {
+    public CustomDialogAddTemplate(Context context) {
         this.context = context;
     }
 
@@ -36,15 +36,10 @@ public class CustomDialogAddTemplate extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String templateName = addTemplateName.getText().toString();
-                        if (templateName.isEmpty() || templateName.equals("") || templateName == null || templateName.equals(" ")){
-                            Toast.makeText(context, "Template Name Required...", Toast.LENGTH_SHORT).show();
-                        }else{
-                            listener.templateText(templateName);
-                        }
+                        listener.templateText(templateName);
 
                     }
                 });
-
         addTemplateName = view.findViewById(R.id.addTemplateName);
         return builder.create();
     }
@@ -58,7 +53,6 @@ public class CustomDialogAddTemplate extends AppCompatDialogFragment {
             throw new ClassCastException(context.toString() + " must implement DialogAddButtonListener");
         }
     }
-
     public interface DialogTemplateNameListener {
         void templateText(String tmpName);
     }

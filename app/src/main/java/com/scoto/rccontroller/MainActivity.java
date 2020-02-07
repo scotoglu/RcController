@@ -2,6 +2,7 @@ package com.scoto.rccontroller;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         /*Hide navigation bar and status bar...*/
         decoderView = getWindow().getDecorView();
         decoderView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
-
+        /*-------------------------------------------------------------------------*/
 
         btnBluetoothOps = findViewById(R.id.btnBluetooth);
         btnDrawTemplate = findViewById(R.id.btnDrawTemplate);
@@ -48,11 +47,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnDrawTemplate.setOnClickListener(this);
         btnSavedTemplate.setOnClickListener(this);
 
+        /*-------------------------------------------------------------------------*/
+
         /*if app will work on Emulator, comment below if-else statement,if you don't, cause a error
         Emulator has no Bluetooth features.
         */
-
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, getResources().getString(R.string.no_bluetooth_adapter), Toast.LENGTH_SHORT).show();
         }
@@ -62,9 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent enabledIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enabledIntent, REQUEST_ENABLE_BT);
         }
-
     }
-
 
     @Override
     protected void onDestroy() {
@@ -77,9 +75,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor.remove("DeviceAddress");
         }
         Log.d(TAG, "onDestroy: Destroying...");
-        if (mBluetoothAdapter.isEnabled()){
+
+        if (mBluetoothAdapter.isEnabled()) {
             mBluetoothAdapter.disable();
-            Toast.makeText(this,getResources().getString(R.string.disable_bt), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.disable_bt), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -89,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG, "onBackPressed: Back Button pressed...");
     }
 
+
+    //Home screen routing when button pressed.
     @Override
     public void onClick(View view) {
         switch (view.getId()) {

@@ -1,11 +1,9 @@
 package com.scoto.rccontroller;
 /**/
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -26,12 +24,12 @@ import android.widget.Toast;
 
 import com.scoto.rccontroller.CustomDialogs.CustomDialogAddButton;
 import com.scoto.rccontroller.CustomDialogs.CustomDialogAddTemplate;
-import com.scoto.rccontroller.CustomDialogs.CustomDialogPairedDeviceList;
 import com.scoto.rccontroller.Database.AppDatabase;
 import com.scoto.rccontroller.Modal.EntityModal;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -43,12 +41,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class DrawTemplateActivity extends AppCompatActivity implements CustomDialogAddTemplate.DialogTemplateNameListener,
-        CustomDialogAddButton.DialogAddButtonListener,
-        CustomDialogPairedDeviceList.DialogCustomPairedDeviceListListener {
-
+        CustomDialogAddButton.DialogAddButtonListener {
 
     /*------------------*/
-    private Button button;
     private View decoderView;
     private static final String TAG = "DrawTemplateActivity";
     private int viewId = -1;
@@ -59,6 +54,7 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
     private String savedTemplate = null;
     private String templateName;
     private ImageView stateOfConnection;
+
     //    /*BTConnectClient properties*/
     private boolean mConnected = true;
     private ProgressDialog mProgressDialog;
@@ -72,11 +68,14 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
     private static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private BTConnectionClient btConnectionClient;
 
+    /*----------------Database Variable----------------*/
+
+    AppDatabase appDatabase = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_draw_template);
-
 
         /*Hide navigation bar and status bar...*/
         decoderView = getWindow().getDecorView();
@@ -90,22 +89,25 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
         });
 
         Intent intent = getIntent();
-        passedAddress = intent.getStringExtra("DEVICE_ADDRESS");
-        savedTemplate = intent.getStringExtra("TEMPLATE_NAME");
+        passedAddress = intent.getStringExtra("DEVICE_ADDRESS");//User coming from PairedDeviceActivity.
+        savedTemplate = intent.getStringExtra("TEMPLATE_NAME");//User coming from SavedTemplateActivity.
 
         templateName = savedTemplate;
 
         RelativeLayout relativeLayout = findViewById(R.id.workLayout);
 
+        //load template views.
         if (savedTemplate != null) {
+
             AppDatabase appDatabase = AppDatabase.getDatabase(DrawTemplateActivity.this);
             List<EntityModal> templateList = appDatabase.viewDao().getTemplate(savedTemplate);
+
             for (EntityModal entityModal : templateList) {
                 Button tmpBtn = new Button(getApplicationContext());
                 tmpBtn.setX(entityModal.getViewCoordinateX());
                 tmpBtn.setY(entityModal.getViewCoordinateY());
                 tmpBtn.setText(entityModal.getViewData());
-                tmpBtn.setId(View.generateViewId());
+                tmpBtn.setId(View.generateViewId());//View generate random Id, because Id of view cant be store, The ID's generated when added to layout
                 tmpBtn.setOnTouchListener(new ChoiceTouchListener());
                 relativeLayout.addView(tmpBtn);
             }
@@ -113,19 +115,22 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
             addTemplateName();
         }
 
+        //Read device address from local storage
         SharedPreferences sharedPreferences = this.getSharedPreferences("ApplicationShared", MODE_PRIVATE);
         String address = sharedPreferences.getString("DeviceAddress", "null");
+
         Log.d(TAG, "onCreate: Passed Address" + passedAddress);
         if (passedAddress == null) {
             passedAddress = address;
         }
 
+
         if (passedAddress != null && btConnectionClient == null) {
-            /*Connection Thread */
             btConnectionClient = new BTConnectionClient(this);
             btConnectionClient.execute();
         } else {
-            Toast.makeText(this, "There is no connection, work without connection...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "There is no connection, work without connection...",
+                    Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -143,7 +148,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
         btConnectionClient.disconnect();
     }
 
-
     /*------------------------------------------------------------------------------------*/
     //At the activity start, opens a dialog and asks the template name.
     public void addTemplateName() {
@@ -159,19 +163,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
     public void templateText(String tmpName) {
         Log.d(TAG, "templateText: " + tmpName);
         templateName = tmpName;
-
-    }
-    /*---------------------------------------------------------------------------------------*/
-
-    public void openDeviceList() {
-        CustomDialogPairedDeviceList customDialogPairedDeviceList = new CustomDialogPairedDeviceList(this);
-        customDialogPairedDeviceList.show(getSupportFragmentManager(), "Example Diaalog");
-    }
-
-    @Override
-    public void pairedDevice(String address) {
-        mAddress = address;
-        Log.d(TAG, "pairedDevice: mAddress" + mAddress);
     }
 
     /*---------------------------------------------------------------------------------------*/
@@ -189,10 +180,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
     @Override
     public void applyText(String txtBtn, String btnColor, String viewIcon) {
 
-        Log.d(TAG, "applyText: Button Text" + txtBtn);
-        Log.d(TAG, "applyText: Button Color" + btnColor);
-        Log.d(TAG, "applyText: Button Icon" + viewIcon);
-
         RelativeLayout relativeLayout = findViewById(R.id.workLayout);
         Button newBtn = new Button(getApplicationContext());
         newBtn.setText(txtBtn);
@@ -202,10 +189,8 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
 
         newBtn.setOnTouchListener(new ChoiceTouchListener());
         relativeLayout.addView(newBtn);
-
     }
     /*---------------------------------------------------------------------------------------*/
-
     public void deleteButton(View view) {
         Log.d(TAG, "deleteButton: Called");
         RelativeLayout relativeLayout = findViewById(R.id.workLayout);
@@ -216,14 +201,12 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
             Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
         }
     }
-
     /*---------------------------------------------------------------------------------------*/
     public void clearButton(View view) {
         Log.d(TAG, "clearButton: Called");
         RelativeLayout relativeLayout = findViewById(R.id.workLayout);
         relativeLayout.removeAllViews();
     }
-
     /*---------------------------------------------------------------------------------------*/
     public void saveButton(View view) {
         Log.d(TAG, "saveButton: Called");
@@ -246,56 +229,74 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
 
             List<EntityModal> isAddedListBeforeCheck = appDatabase.viewDao().getTemplate(templateName);
 
-
             /*Updating template...*/
             if (isAddedListBeforeCheck.size() > 0) {
-//                /*template added before*/
-//                for (int i = 0; i < isAddedListBeforeCheck.size(); i++) {
-//
-//                    Button b = (Button) relativeLayout.getChildAt(i);//gets buttons on layout
-//                    if (b.getX()==isAddedListBeforeCheck.get(i).getViewCoordinateX()
-//                            && b.getY()== isAddedListBeforeCheck.get(i).getViewCoordinateY()
-//                            && b.getText().toString()==isAddedListBeforeCheck.get(i).getViewData()){
-//                        Log.d(TAG, "saveButton: View Already exist on database");
-//                    }else{
-//                        EntityModal entityModal = new EntityModal(
-//                                templateName, b.getX(), b.getY(), b.getText().toString(), date.toString()//creates a object
-//                        );
-//                        appDatabase.viewDao().insertTemplate(entityModal);//insert into database
-//                    }
-//
-//
-//                }
-//
-//                Toast.makeText(this, "Successfully updated.", Toast.LENGTH_SHORT).show();
-
+                //do nothing
             } else {
                 /*not added before*/
                 for (int i = 0; i < countOfView; i++) {
-
                     Button b = (Button) relativeLayout.getChildAt(i);//gets buttons on layout
                     EntityModal entityModal = new EntityModal(
-                            templateName, b.getX(), b.getY(), b.getText().toString(), date.toString()//creates a object
+                            templateName, b.getX(), b.getY(), b.getText().toString()
                     );
                     appDatabase.viewDao().insertTemplate(entityModal);//insert into database
                 }
-
                 List<EntityModal> checkIsAdded = appDatabase.viewDao().getTemplate(templateName);
                 if (checkIsAdded.size() > 0) {
                     Toast.makeText(this, getString(R.string.added_success), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, getString(R.string.added_unsuccess), Toast.LENGTH_SHORT).show();
                 }
+            }
+        }
+    }
+    /*------------------------------------------------------------------------------------------------*/
+    public void deleleteTemplate(View view) {
+
+        appDatabase = AppDatabase.getDatabase(getApplicationContext());
+        List<EntityModal> list = new ArrayList<>();
+
+        if (savedTemplate != null) {
+            appDatabase.viewDao().deleteTemplate(savedTemplate);
+        }
+        if (templateName != null) {
+            list = appDatabase.viewDao().getTemplate(templateName);
+            if (list.size() > 0) {
+                appDatabase.viewDao().deleteTemplate(templateName);
+                Toast.makeText(this, getString(R.string.deleteSucceed), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.template_not_found), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /*------------------------------------------------------------------------------------------------*/
+    public void updateTemplate(View view) {
+        List<EntityModal> list = new ArrayList<>();
+        appDatabase = AppDatabase.getDatabase(this);
+        list = appDatabase.viewDao().getTemplate(savedTemplate);
+        if (list.size() > 0) {
+            //template exist
+            RelativeLayout relativeLayout = findViewById(R.id.workLayout);
+            int count = relativeLayout.getChildCount();
+            for (int i = 0; i < count; i++) {
+
+                Button updateBtn = (Button) relativeLayout.getChildAt(i);
+                EntityModal entityModal = new EntityModal(
+                        savedTemplate,
+                        updateBtn.getX(),
+                        updateBtn.getY(),
+                        updateBtn.getText().toString()
+                );
+                appDatabase.viewDao().updateTemplate(entityModal);
+
+                Toast.makeText(this, "Updated Succesfully.", Toast.LENGTH_SHORT).show();
 
             }
-
         }
-
-
     }
 
     /*---------------------------------------------------------------------------------------*/
-
     private Button setColor(String btnColor, Button btn) {
         switch (btnColor) {
             case "Red":
@@ -316,9 +317,15 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
         switch (btnIcon) {
             case "Right":
                 btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.left_t));
+                if (btn.getText() == null) {
+                    btn.setText("L");
+                }
                 break;
             case "Left":
                 btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.right_t));
+                if (btn.getText() == null) {
+                    btn.setText("R");
+                }
                 break;
             case "Backward":
                 btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.down));
@@ -337,7 +344,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
         }
         return btn;
     }
-
     /*---------------------------------------------------------------------------------------*/
 
     /*Hide navigation bar and status bar...*/
@@ -358,6 +364,7 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
     }
+
 
     /*-------------------------------Manage Drag and Drop Process START--------------------------------*/
     private class ChoiceTouchListener implements View.OnTouchListener {
@@ -381,13 +388,13 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
                     Log.d(TAG, "onTouch: data " + data);
 
                     //sends the data to working thread...
-                    btConnectionClient.transmitData(data);
+                    if (passedAddress != null) {
+                        btConnectionClient.transmitData(data);
+                    }
                     break;
                 case MotionEvent.ACTION_POINTER_UP:
-
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
-
                     break;
                 case MotionEvent.ACTION_MOVE:
                     RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view
@@ -407,9 +414,7 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
     /*-------------------------------------------------------------------------------------------------*/
 
     private class BTConnectionClient extends AsyncTask<Void, Void, Void> {
-
         String sendData;
-
 
         BTConnectionClient(AppCompatActivity activity) {
             Log.d(TAG, "BTConnectClient: Constructor Active");
@@ -417,7 +422,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
             mCurrentActivity = activity;
             mAddress = passedAddress;
         }
-
 
         @Override
         protected void onPreExecute() {
@@ -444,7 +448,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
             return null;
         }
 
-
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
@@ -453,10 +456,7 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
                 Log.d(TAG, "onPostExecute: Connection Failed. Is it a SPP Bluetooth running a server? Try again.");
 
             } else {
-
                 Toast.makeText(mCurrentActivity, "Connected...", Toast.LENGTH_SHORT).show();
-
-                // sendData();
             }
             mProgressDialog.dismiss();
         }
@@ -470,16 +470,13 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
                     Log.d(TAG, "disconnect: Error");
                 }
             }
-
             Log.d(TAG, "disconnect: Disconnected");
         }
-
 
         public void transmitData(String data) {
             Log.d(TAG, "transmitData: Active");
             addDataToQueue(data);
         }
-
 
         private void addDataToQueue(String data) {
             Log.d(TAG, "addDataToQueue: Active...");
@@ -495,7 +492,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
                 Log.d(TAG, "run: Runnable");
                 if (!mBluetoothSocket.isConnected()) {
                     Log.d(TAG, "run: Socket is null...");
-                    //  System.exit(1);
                 }
                 OutputStream out = null;
                 while (true) {
@@ -508,7 +504,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
                             Log.e(TAG, "run: ", ex);
                         }
                     }
-
                     String stringData = stringQueue.poll();
                     lock.unlock();
                     try {
@@ -525,10 +520,7 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
                     } catch (IOException ex) {
                         Log.d("Write data", "Bug AFTER data was sent");
                     }
-
                 }
-
-
             }
         };
     }

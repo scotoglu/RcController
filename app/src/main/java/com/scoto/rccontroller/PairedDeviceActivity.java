@@ -1,20 +1,15 @@
 package com.scoto.rccontroller;
 
-import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ComponentName;
-import android.content.Context;
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.scoto.rccontroller.Services.BTConnectService;
 
 import java.util.ArrayList;
 
@@ -24,12 +19,8 @@ public class PairedDeviceActivity extends AppCompatActivity {
     private ListView listView;
     private BluetoothOperations mBluetoothOperations;
     private ArrayAdapter mAdapter;
-    private String mAddress;
     private SharedPreferences sharedPreferences;
     private View decoderView;
-   // BTConnectService btConnectService;
-
-    //boolean mBound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,20 +37,22 @@ public class PairedDeviceActivity extends AppCompatActivity {
         });
 
         mBluetoothOperations = new BluetoothOperations();
+
         final ArrayList<String> pairedDevices = mBluetoothOperations.getPairedDevices();
 
         mAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, pairedDevices);
         listView = findViewById(R.id.pairedDevices);
-
         listView.setAdapter(mAdapter);
+
+        //Store device address in local storage.
         sharedPreferences = this.getSharedPreferences("ApplicationShared", MODE_PRIVATE);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String info = pairedDevices.get(i).toString();
 
-                final String address = info.substring((info.length() - 17));
-                mAddress = address;
+                final String address = info.substring((info.length() - 17));//17 device address mac address length.
+
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("DeviceAddress", address);
                 editor.commit();
@@ -67,45 +60,11 @@ public class PairedDeviceActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(),DrawTemplateActivity.class);
                 intent.putExtra("DEVICE_ADDRESS",address);
                 startActivity(intent);
-                //btConnectService.getAddress(address);
-
-                /*Connectio Client will be here*/
-//                BTConnect btConnect = new BTConnect(PairedDeviceActivity.this,address);
-//                btConnect.execute();
 
             }
         });
 
     }
-
-
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        intent = new Intent(this, BTConnectService.class);
-//        bindService(intent, connection, Context.BIND_AUTO_CREATE);
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        unbindService(connection);
-//        mBound = false;
-//    }
-
-//    private ServiceConnection connection = new ServiceConnection() {
-//        @Override
-//        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-//            BTConnectService.LocalBinder localBinder = (BTConnectService.LocalBinder) iBinder;
-//            btConnectService = localBinder.getService();
-//            mBound = true;
-//        }
-//
-//        @Override
-//        public void onServiceDisconnected(ComponentName componentName) {
-//            mBound = false;
-//        }
-//    };
 
     //Hides the status bar and navigation bar
     @Override
