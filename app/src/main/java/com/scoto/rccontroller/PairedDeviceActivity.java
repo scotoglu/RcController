@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -40,6 +41,7 @@ public class PairedDeviceActivity extends AppCompatActivity {
 
         final ArrayList<String> pairedDevices = mBluetoothOperations.getPairedDevices();
 
+        Log.d(TAG, "onCreate: Paired Devices..."+pairedDevices);
         mAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, pairedDevices);
         listView = findViewById(R.id.pairedDevices);
         listView.setAdapter(mAdapter);

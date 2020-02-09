@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         /*if app will work on Emulator, comment below if-else statement,if you don't, cause a error
         Emulator has no Bluetooth features.
         */
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, getResources().getString(R.string.no_bluetooth_adapter), Toast.LENGTH_SHORT).show();
         }
