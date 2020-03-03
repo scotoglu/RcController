@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
-        /*-------------------------------------------------------------------------*/
+
 
         btnBluetoothOps = findViewById(R.id.btnBluetooth);
         btnDrawTemplate = findViewById(R.id.btnDrawTemplate);
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnDrawTemplate.setOnClickListener(this);
         btnSavedTemplate.setOnClickListener(this);
 
-        /*-------------------------------------------------------------------------*/
+
 
         /*if app will work on Emulator, comment below if-else statement,if you don't, cause a error
         Emulator has no Bluetooth features.
@@ -63,6 +63,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivityForResult(enabledIntent, REQUEST_ENABLE_BT);
         }
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ENABLE_BT) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, getResources().getString(R.string.result_ok), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.result_canceled), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     @Override
     protected void onDestroy() {
@@ -74,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.remove("DeviceAddress");
         }
+
         Log.d(TAG, "onDestroy: Destroying...");
 
         if (mBluetoothAdapter.isEnabled()) {
@@ -108,17 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ENABLE_BT) {
-            if (resultCode == RESULT_OK) {
-                Toast.makeText(this, getResources().getString(R.string.result_ok), Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, getResources().getString(R.string.result_canceled), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+
 
     /*Hide navigation bar and status bar...*/
     @Override

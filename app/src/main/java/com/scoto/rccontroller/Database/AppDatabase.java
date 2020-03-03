@@ -15,7 +15,7 @@ import com.scoto.rccontroller.Modal.EntityModal;
 * mutltiple class(table) can add to do that use entities={Class.class,Class.class)
 *
 * */
-@Database(entities = {EntityModal.class},version = 2,exportSchema = false)
+@Database(entities = {EntityModal.class},version = 3,exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract EntityDao viewDao();

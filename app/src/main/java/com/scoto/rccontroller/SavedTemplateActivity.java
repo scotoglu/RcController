@@ -48,18 +48,17 @@ public class SavedTemplateActivity extends AppCompatActivity {
         }
 
         listViewSaved = findViewById(R.id.savedTemplates);
-        mArrayAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,templateList);
+        mArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, templateList);
         listViewSaved.setAdapter(mArrayAdapter);
         listViewSaved.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String templateName = templateList.get(i);
-                Intent savedIntent  =new Intent(SavedTemplateActivity.this,DrawTemplateActivity.class);
-                savedIntent.putExtra(TEMPLATE_NAME,templateName.toString());
+                Intent savedIntent = new Intent(SavedTemplateActivity.this, DrawTemplateActivity.class);
+                savedIntent.putExtra(TEMPLATE_NAME, templateName.toString());
                 startActivity(savedIntent);
             }
         });
-
 
     }
 

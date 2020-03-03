@@ -43,7 +43,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class DrawTemplateActivity extends AppCompatActivity implements CustomDialogAddTemplate.DialogTemplateNameListener,
         CustomDialogAddButton.DialogAddButtonListener {
 
-    /*------------------*/
+
     private View decoderView;
     private static final String TAG = "DrawTemplateActivity";
     private int viewId = -1;
@@ -55,7 +55,7 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
     private String templateName;
     private ImageView stateOfConnection;
 
-    //    /*BTConnectClient properties*/
+    /*BTConnectClient properties*/
     private boolean mConnected = true;
     private ProgressDialog mProgressDialog;
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -165,7 +165,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
         templateName = tmpName;
     }
 
-    /*---------------------------------------------------------------------------------------*/
     /*When press the Add, opens dialog for adding new button..*/
     public void addButton(View view) {
         Log.d(TAG, "addButton: Called");
@@ -190,7 +189,7 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
         newBtn.setOnTouchListener(new ChoiceTouchListener());
         relativeLayout.addView(newBtn);
     }
-    /*---------------------------------------------------------------------------------------*/
+
     public void deleteButton(View view) {
         Log.d(TAG, "deleteButton: Called");
         RelativeLayout relativeLayout = findViewById(R.id.workLayout);
@@ -201,22 +200,36 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
             Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
         }
     }
-    /*---------------------------------------------------------------------------------------*/
+
     public void clearButton(View view) {
         Log.d(TAG, "clearButton: Called");
         RelativeLayout relativeLayout = findViewById(R.id.workLayout);
         relativeLayout.removeAllViews();
     }
-    /*---------------------------------------------------------------------------------------*/
+
     public void saveButton(View view) {
+        /*
+        *
+        *Create table for each template
+        * templatesTable        ViewOfTemplateTable
+        * |------------|         |---------------|
+        * |ID          |   ----->|ID             |
+        * |templateName|         |viewX          |
+        * |------------|         |viewY          |
+        *                        |viewText       |
+        *                        |---------------|
+        *
+        * Problem is when retrieving data from db, fetchs every view with template name on the SavedTemplateList.
+        * ie. template has 4 view then, display 4 time same template name on the list,
+        *
+        *
+        * */
         Log.d(TAG, "saveButton: Called");
         Log.d(TAG, "saveButton: Template Name: " + templateName);
 
         RelativeLayout relativeLayout = findViewById(R.id.workLayout);
 
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        if (templateName == null) {
+        if (templateName == null || templateName.equals("")) {
             templateName = "Default";
         }
         int countOfView = relativeLayout.getChildCount();//Return number of view on layout
@@ -250,7 +263,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
             }
         }
     }
-    /*------------------------------------------------------------------------------------------------*/
     public void deleleteTemplate(View view) {
 
         appDatabase = AppDatabase.getDatabase(getApplicationContext());
@@ -270,7 +282,7 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
         }
     }
 
-    /*------------------------------------------------------------------------------------------------*/
+
     public void updateTemplate(View view) {
         List<EntityModal> list = new ArrayList<>();
         appDatabase = AppDatabase.getDatabase(this);
@@ -296,7 +308,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
         }
     }
 
-    /*---------------------------------------------------------------------------------------*/
     private Button setColor(String btnColor, Button btn) {
         switch (btnColor) {
             case "Red":
@@ -344,7 +355,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
         }
         return btn;
     }
-    /*---------------------------------------------------------------------------------------*/
 
     /*Hide navigation bar and status bar...*/
     @Override
@@ -410,9 +420,6 @@ public class DrawTemplateActivity extends AppCompatActivity implements CustomDia
             return true;
         }
     }
-    /*-------------------------------Manage Drag and Droğ Process END---------------------------------*/
-    /*-------------------------------------------------------------------------------------------------*/
-
     private class BTConnectionClient extends AsyncTask<Void, Void, Void> {
         String sendData;
 

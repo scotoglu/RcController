@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainActivity">
+
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.scoto.rccontroller.MainActivity"
+        android:label="MainActivity"
+        tools:layout="@layout/activity_main" >
+        <action
+            android:id="@+id/action_mainActivity_to_drawTemplateActivity"
+            app:destination="@id/drawTemplateActivity"
+            app:enterAnim="@anim/fragment_open_enter" />
+        <action
+            android:id="@+id/action_mainActivity_to_savedTemplateActivity"
+            app:destination="@id/savedTemplateActivity"
+            app:enterAnim="@anim/fragment_open_enter" />
+        <action
+            android:id="@+id/action_mainActivity_to_pairedDeviceActivity"
+            app:destination="@id/pairedDeviceActivity"
+            app:enterAnim="@anim/fragment_open_enter" />
+    </activity>
+    <activity
+        android:id="@+id/drawTemplateActivity"
+        android:name="com.scoto.rccontroller.DrawTemplateActivity"
+        android:label="DrawTemplateActivity"
+        tools:layout="@layout/activity_draw_template" />
+    <activity
+        android:id="@+id/pairedDeviceActivity"
+        android:name="com.scoto.rccontroller.PairedDeviceActivity"
+        android:label="PairedDeviceActivity"
+        tools:layout="@layout/activity_paired_device" >
+        <action
+            android:id="@+id/action_pairedDeviceActivity_to_drawTemplateActivity"
+            app:destination="@id/drawTemplateActivity" />
+    </activity>
+    <activity
+        android:id="@+id/savedTemplateActivity"
+        android:name="com.scoto.rccontroller.SavedTemplateActivity"
+        android:label="SavedTemplateActivity"
+        tools:layout="@layout/activity_saved_template" >
+        <action
+            android:id="@+id/action_savedTemplateActivity_to_drawTemplateActivity"
+            app:destination="@id/drawTemplateActivity" />
+    </activity>
+</navigation>
